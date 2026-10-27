@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f8fc"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="ФАОП Навигатор">
+<meta name="description" content="Наглядные учебные планы ФАОП НОО, ФАОП ООО и ФАООП УО: сравнение предметов и часов, исходные таблицы, официальные источники.">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="assets/icon-180.png"><link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="style.css">
+<title>ФАОП Навигатор — учебные планы и сравнение</title>
+<script defer src="data.js"></script><script defer src="app.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="header-inner">
+<button class="brand" data-home aria-label="Открыть главную"><span class="logo"><svg width="29" height="29" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 9c-4-4-9-4.5-13-3v18c4-1.5 9-1 13 3m0-18c4-4 9-4.5 13-3v18c-4-1.5-9-1-13 3m0-18v18" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><strong>ФАОП <em>Навигатор</em></strong><small>Учебные планы для обучающихся с ОВЗ</small></span></button>
+<nav class="header-nav" aria-label="Основная навигация"><button data-home id="navHome">Учебные планы</button><button data-compare id="navCompare">Сравнить <span class="mini-pill">2</span></button><button data-sources id="navSources">Источники</button></nav>
+<div class="header-actions"><button class="header-search" data-search-open aria-label="Поиск по всем учебным планам"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><span>Найти план</span><kbd>⌘ K</kbd></button><button class="header-round" data-favorites-open aria-label="Избранное" title="Избранное">☆</button></div>
+</div></header>
+<main id="main" class="main-shell" tabindex="-1"></main>
+<footer class="site-footer"><div class="footer-inner"><div><strong>ФАОП Навигатор</strong><span>Справочный инструмент по федеральным учебным планам. Данные по неделям, не годовой объём.</span></div><div class="footer-links"><a href="https://publication.pravo.gov.ru/Document/View/0001202303220005" target="_blank" rel="noopener noreferrer">№ 1023 · НОО</a><a href="https://publication.pravo.gov.ru/Document/View/0001202303220006" target="_blank" rel="noopener noreferrer">№ 1025 · ООО</a><a href="https://publication.pravo.gov.ru/Document/View/0001202212300059" target="_blank" rel="noopener noreferrer">№ 1026 · УО</a></div></div></footer>
+<nav class="mobile-dock" aria-label="Быстрые действия"><button data-home id="dockHome"><span>⌂</span>Главная</button><button data-search-open><span>⌕</span>Поиск</button><button data-compare id="dockCompare"><span>⇄</span>Сравнить</button><button data-favorites-open><span>☆</span>Избранное</button></nav>
+<dialog id="originalDialog" class="original-dialog"><div class="dialog-head"><div><strong id="originalTitle">Исходная таблица</strong><small>Предоставленное изображение учебного плана</small></div><div class="dialog-actions"><button type="button" id="zoomOut" title="Уменьшить" aria-label="Уменьшить">−</button><button type="button" id="zoomIn" title="Увеличить" aria-label="Увеличить">+</button><button type="button" id="closeOriginal" aria-label="Закрыть">×</button></div></div><div id="originalScroll" class="original-scroll"><img id="originalImage" alt="Исходный учебный план в виде таблицы"></div></dialog>
+<dialog id="globalDialog" class="search-dialog"><div class="search-dialog-top"><label class="search-dialog-label"><span>⌕</span><input id="globalInput" type="search" placeholder="Категория, предмет или вариант…" autocomplete="off" aria-label="Поиск по учебным планам"></label><button id="closeGlobal" aria-label="Закрыть поиск">×</button></div><div id="globalResults" class="global-results"></div><div class="dialog-foot">Поиск по названию, номеру варианта и учебным предметам · <kbd>Esc</kbd> для закрытия</div></dialog>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body></html>
