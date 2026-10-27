@@ -48,3 +48,9 @@
  .hero-art-icons,.detail-hero-art{display:none}
 }
 @media(prefers-reduced-motion:reduce){.category-symbol{transition:none}}
+
+/* Verified reference profiles distinguish normative baseline from variant-specific tables. */
+.reference-notice{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;background:#fff9ed;border:1px solid #e8cba1;color:#604a27;border-radius:15px;padding:13px 18px;margin:0 0 18px;line-height:1.46;font-size:13px}
+.reference-notice strong{font-size:14px;color:#80552a}.reference-notice span{flex:1 1 420px}.reference-notice a{color:#80552a;text-decoration:underline;font-weight:650}
+a.light-btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.tile-actions{flex-wrap:wrap}

@@ -432,7 +432,7 @@ function pushPlan(mode,id,group,grades,rows,totals,note='',details={}){
  for(const [k,v] of Object.entries(totals))rec.totals[k]=P(v);
  for(const r of rec.rows)if(r.values.length!==rec.grades.length)throw Error(rec.key+' invalid row '+r.name);
  for(const [k,v] of Object.entries(rec.totals))if(v.length!==rec.grades.length)throw Error(rec.key+' invalid total '+k);
- rec.original=`assets/originals/${mode}_${id}.webp`;
+ rec.original=rec.original===null?null:`assets/originals/${mode}_${id}.webp`;
  RECORDS.push(rec);
  return rec;
 }
@@ -658,6 +658,102 @@ pushPlan('uo','2','intellectual',L5,`
 {...FE,mandatory:'23 24 24 24 24',choice:'6 6 6 6 6',max:'29 30 30 30 30',correction:'8 8 8 8 8',other:'2 2 2 2 2'},
 'Для обучающихся по варианту 2 предусматривается СИПР. ФАООП УО — отдельная федеральная программа.',{variant:'Вариант 2',isSeparate:true,correctionRows:R(`|Сенсорное развитие|2 2 2 2 2\n|Предметно-практические действия|2 2 2 2 2\n|Двигательное развитие|2 2 2 2 2\n|Альтернативная коммуникация|2 2 2 2 2`)});
 
+
+
+/* Complete normative catalog, 2026-10-27. For federal variants that explicitly
+   refer to the standard FOP study plan, display the official FOP 5-day baseline
+   only as a REFERENCE (not a unique compulsory FAOP timetable). */
+const FOP_NOO_5DAY = `
+Русский язык и литературное чтение|Русский язык|5 5 5 5
+|Литературное чтение|4 4 4 4
+Иностранный язык|Иностранный язык|- 2 2 2
+Математика и информатика|Математика|4 4 4 4
+Обществознание и естествознание|Окружающий мир|2 2 2 2
+Основы религиозных культур и светской этики|Основы религиозных культур и светской этики|- - - 1
+Искусство|Изобразительное искусство|1 1 1 1
+|Музыка|1 1 1 1
+Технология|Труд (технология)|1 1 1 1
+Физическая культура|Физическая культура|3 2 2 2`;
+const FOP_NOO_5DAY_TOTALS={mandatory:'21 22 22 23',choice:'0 1 1 0',max:'21 23 23 23'};
+const NOO_FOP_URL='https://sudact.ru/law/prikaz-minprosveshcheniia-rossii-ot-18052023-n-372/federalnaia-obrazovatelnaia-programma-nachalnogo-obshchego/iv/171/';
+const N_REF=[
+ ['1.1','deaf','https://www.consultant.ru/document/cons_doc_LAW_442699/0e179123a479539c9bb083b97f3a352a6b02d4db/','п. 16: общий предметный состав ФОП НОО; 5 часов коррекционно-развивающих занятий в неделю'],
+ ['2.1','hard-hearing','https://www.consultant.ru/document/cons_doc_LAW_442699/7a0f840b6ae9c5bdb085253660b63de2512dfee9/','п. 45: учебные предметы по ФОП НОО; 5 часов коррекционно-развивающих занятий'],
+ ['3.1','blind','https://www.consultant.ru/document/cons_doc_LAW_442699/dcc8c338acde89d8c98de07be25a25873ed0ba90/','п. 64: учебные предметы по ФОП НОО; 5 часов коррекционно-развивающих занятий'],
+ ['4.1','low-vision','https://www.consultant.ru/document/cons_doc_LAW_442699/06f69fe6df7af298bff602fc0506712ce51927ad/','п. 85: учебные предметы по ФОП НОО; 5 часов коррекционно-развивающих занятий'],
+ ['5.1','speech','https://publication.pravo.gov.ru/Document/View/0001202303220005','федеральный вариант обучения в стандартные сроки; предметная часть на основе ФОП НОО'],
+ ['6.1','motor','https://www.consultant.ru/document/cons_doc_LAW_442699/3d8eac773e8597fcaf0ba5563ea64a3fc6ed8bdb/','п. 114: предметные области соответствуют ФОП НОО; коррекционно-развивающие занятия не менее 5 часов'],
+ ['7.1','delay','https://publication.pravo.gov.ru/Document/View/0001202303220005','четырёхлетнее начальное обучение; предметы по ФОП НОО с коррекционно-развивающим сопровождением'],
+ ['8.1','autism','https://www.consultant.ru/document/cons_doc_LAW_442699/42d6734fcdc980e8b2811cb63c4eb45e16a0e253/','п. 175: предметы соответствуют ФОП НОО для варианта 8.1; 5 часов коррекционно-развивающих занятий']
+];
+for(const [id,group,legalUrl,ref] of N_REF){
+ pushPlan('noo',id,group,'I|II|III|IV',FOP_NOO_5DAY,FOP_NOO_5DAY_TOTALS,
+  `Это вариант ${id}. ${ref}. Ниже показана только базовая 5-дневная сетка ФОП НОО (вариант № 1, актуальная редакция), поскольку отдельная фиксированная предметная таблица для данного варианта ФАОП не установлена. Точный план выбирает образовательная организация.`,
+  {variant:`Вариант ${id}`,referenceOnly:true,sourceUrl:legalUrl,baselineUrl:NOO_FOP_URL,referenceCaption:'Базовый пример ФОП НОО · 5-дневная неделя',correctionRule:'5 часов в неделю на коррекционно-развивающие занятия (норматив; не входит в аудиторную нагрузку)', original:null});
+}
+/* Special full numeric grid, NOO 8.4, p.202.5 of Order 1023
+   amended by Order 495 17 July 2024. */
+pushPlan('noo','8.4','autism','I доп. 1|I доп. 2|I|II|III|IV',`
+Язык и речевая практика|Речь и альтернативная коммуникация|3 3 3 3 2 2
+Математика|Математические представления|2 2 2 2 2 2
+Окружающий мир|Окружающий природный мир|2 2 2 2 2 2
+|Человек|3 3 3 3 3 3
+|Домоводство|- - - - 2 2
+|Окружающий социальный мир|1 1 1 1 2 2
+Искусство|Музыка и движение|2 2 2 2 2 2
+|Изобразительная деятельность|3 3 3 3 2 2
+Физическая культура|Адаптивная физкультура|2 2 2 2 2 2
+Технология|Труд (технология)|- - - 2 3 3`,
+{mandatory:'18 18 18 20 22 22',choice:'3 3 3 3 1 1',max:'21 21 21 23 23 23',extra:'10 10 10 10 10 10',correction:'9 9 9 9 9 9',other:'1 1 1 1 1 1',grand:'31 31 31 33 33 33'},
+'ФАОП НОО, вариант 8.4: для обучающихся с РАС и умеренной, тяжёлой, глубокой УО (ИН), ТМНР. Предусмотрены два дополнительных первых класса и I–IV классы. Полная таблица п. 202.5 приказа № 1023 в редакции № 495.',
+{variant:'Вариант 8.4',sourceParagraph:'202.5',sourceUrl:'https://www.consultant.ru/document/cons_doc_LAW_442699/39bf2873a5fa45ecc815197b855701caf44d747e/',original:null,correctionRows:R(`
+|Эмоциональное и коммуникативно-речевое развитие|2 2 2 2 2 2
+|Сенсорное развитие|1 1 1 1 1 1
+|Двигательное развитие|2 2 2 2 2 2
+|Предметно-практические действия|2 2 2 2 2 2
+|Коррекционно-развивающие занятия|2 2 2 2 2 2`) });
+
+/* Official baseline FOP ООО, Order 370, §167, 5 days, version effective 2026.
+   Conditional reforms from 01.09.2027 are NOT yet applied to 2026.
+   Decimal DNKR subject is 0.5 hour in V class. */
+const FOP_OOO_5DAY=`
+Русский язык и литература|Русский язык|5 6 4 3 3
+|Литература|3 3 2 2 3
+Иностранные языки|Иностранный язык|2 3 3 3 3
+Математика и информатика|Математика|5 5 - - -
+|Алгебра|- - 3 3 3
+|Геометрия|- - 2 2 2
+|Вероятность и статистика|- - 1 1 1
+|Информатика|- - 1 1 1
+Общественно-научные предметы|История|3 3 3 3 2
+|Обществознание|- - - - 1
+|География|1 1 2 2 2
+Духовно-нравственная культура России|Духовно-нравственная культура России|0.5 - - - -
+Естественно-научные предметы|Физика|- - 2 2 3
+|Химия|- - - 2 2
+|Биология|1 1 1 2 2
+Искусство|Изобразительное искусство|1 1 1 - -
+|Музыка|1 1 1 1 -
+Технология|Труд (технология)|2 2 2 1 1
+Безопасность|Основы безопасности и защиты Родины|- - - 1 1
+Физическая культура|Физическая культура|2 2 2 2 2`;
+const FOP_OOO_BASE_TOTAL={mandatory:'26.5 28 30 31 32',choice:'2.5 2 2 2 1',max:'29 30 32 33 33'};
+const FOP_OOO_URL='https://sudact.ru/law/prikaz-minprosveshcheniia-rossii-ot-18052023-n-370/federalnaia-obrazovatelnaia-programma-osnovnogo-obshchego/iv/167/';
+const O_REF=[
+ ['1.1','deaf','iv','Нарушения слуха; базовая организация по ФОП ООО и специальные условия коммуникации.'],
+ ['3.1','blind','xvi','Слепые обучающиеся; базовая организация по ФОП ООО и специальные условия зрительного восприятия и ориентирования.'],
+ ['4.1','low-vision','xxii','Слабовидящие обучающиеся; базовая организация по ФОП ООО и адаптация визуальной среды.'],
+ ['5.1','speech','xxviii','ТНР; по п. 137.1 учебный план в целом соответствует ФГОС ООО и ФОП ООО, коррекционная работа во внеурочной деятельности.'],
+ ['6.1','motor','xxxiv','НОДА; по п. 164.1 учебный план в целом соответствует ФГОС ООО и ФОП ООО, заменён предмет физкультуры на адаптивную физическую культуру.'],
+ ['8.1','autism','xliii','РАС; по п. 207.1 учебный план в целом соответствует ФГОС ООО и ФОП ООО.']
+];
+for(const [id,group,section,info] of O_REF){
+ const rs=group==='motor'?FOP_OOO_5DAY.replace('Физическая культура|Физическая культура|2 2 2 2 2','Физическая культура|Адаптивная физическая культура|2 2 2 2 2'):FOP_OOO_5DAY;
+ const legalUrl=`https://sudact.ru/law/prikaz-minprosveshcheniia-rossii-ot-24112022-n-1025/federalnaia-adaptirovannaia-obrazovatelnaia-programma-osnovnogo/${section}/`;
+ pushPlan('ooo',id,group,'V|VI|VII|VIII|IX',rs,FOP_OOO_BASE_TOTAL,
+  `ФАОП ООО, вариант ${id}. ${info} Показан БАЗОВЫЙ пример ФОП ООО (вариант № 1, 5-дневная неделя, редакция с 01.09.2026), а не особая фиксированная сетка часов варианта ${id}. Конкретный учебный план и коррекционные курсы определяются образовательной организацией.`,
+  {variant:`Вариант ${id}`,referenceOnly:true,sourceUrl:legalUrl,baselineUrl:FOP_OOO_URL,referenceCaption:'Базовый пример ФОП ООО · 5-дневная неделя',correctionRule:'Коррекционные занятия: не менее 5 часов в неделю в рамках внеурочной деятельности; часы в базовой предметной таблице не показаны', original:null});
+}
 
 for(const [key,p] of Object.entries(PLANS)){
  const mapped = CATEGORIES.find(c=>c.id===p.category);
